@@ -4,7 +4,7 @@ MONKEYC := $(SDK)/bin/monkeyc
 MONKEYDO := $(SDK)/bin/monkeydo
 CONNECTIQ := $(SDK)/bin/connectiq
 
-DEVICE ?= fenix7spro
+DEVICE ?= fenix7s
 KEY ?= private_key.der
 OUT ?= CloudX28.prg
 
