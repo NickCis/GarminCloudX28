@@ -14,10 +14,14 @@ SETTINGS_SRC := $(patsubst %.prg,%-settings.json,$(OUT))
 APP_BASE := $(basename $(notdir $(OUT)))
 SETTINGS_VPATH := GARMIN/Settings/$(shell echo $(APP_BASE) | tr '[:lower:]' '[:upper:]')-settings.json
 
-.PHONY: build run simulator
+.PHONY: build run simulator release
 
 build:
 	$(MONKEYC) -f monkey.jungle -o $(OUT) -y $(KEY) -d $(DEVICE) -w
+
+# Create .iq package for Connect IQ Store upload
+release:
+	$(MONKEYC) -f monkey.jungle -o $(basename $(OUT)).iq -y $(KEY) -e -r -w
 
 # Launches the Connect IQ Simulator (GUI). Run in its own terminal; keep it open while developing.
 simulator:
