@@ -27,7 +27,7 @@ class MainView extends WatchUi.View {
         cx,
         h - 40,
         Graphics.FONT_SMALL,
-        "Cargando...",
+        L10n.t(Rez.Strings.LoadingLabel),
         Graphics.TEXT_JUSTIFY_CENTER
       );
       return;
@@ -81,20 +81,27 @@ class MainView extends WatchUi.View {
     );
   }
 
+  // Material-inspired lock: rounded body + semicircular shackle (0° = 3 o'clock, 90° = top).
   function drawLock(dc as Graphics.Dc, cx as Number, cy as Number, open as Boolean) as Void {
+    var bodyW = 22;
+    var bodyH = 15;
+    var bodyX = cx - bodyW / 2;
+    var bodyY = cy + 4;
+    var cornerR = 3;
+    var shackleR = 11;
+
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-    var bodyW = 28;
-    var bodyH = 22;
-    var x0 = cx - bodyW / 2;
-    var y0 = cy - bodyH / 2 + 8;
-    dc.fillRoundedRectangle(x0, y0, bodyW, bodyH, 4);
-    dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-    dc.fillRectangle(x0 + 6, y0 + 6, bodyW - 12, bodyH - 10);
-    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+    dc.setPenWidth(1);
+    dc.fillRoundedRectangle(bodyX, bodyY, bodyW, bodyH, cornerR);
+
+    dc.setPenWidth(3);
     if (!open) {
-      dc.drawArc(cx, cy - 4, 14, Graphics.ARC_COUNTER_CLOCKWISE, 180, 360);
+      dc.drawArc(cx, bodyY, shackleR, Graphics.ARC_COUNTER_CLOCKWISE, 0, 180);
     } else {
-      dc.drawArc(cx - 6, cy - 4, 14, Graphics.ARC_COUNTER_CLOCKWISE, 200, 360);
+      // Open shackle: partial top arc (gap on upper-left) + line to body corner, like lock_open.
+      dc.drawArc(cx, bodyY, shackleR, Graphics.ARC_COUNTER_CLOCKWISE, 0, 125);
+      dc.drawLine(cx - 8, cy - 2, bodyX + 2, bodyY + 4);
     }
+    dc.setPenWidth(1);
   }
 }

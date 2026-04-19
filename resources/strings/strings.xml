@@ -1,7 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<strings>
+<strings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
   <string id="AppName">CloudX28</string>
-  <string id="SettingMailTitle">Email (username)</string>
+
+  <string id="SettingMailTitle">Email</string>
   <string id="SettingPasswordTitle">Password</string>
   <string id="SettingPinTitle">PIN</string>
+
+  <string id="ConfigureAccountMsg">Please set up your\naccount in Garmin\nConnect on your phone.</string>
+  <string id="LoadingLabel">Loading...</string>
+
+  <string id="ErrorMissingCredentials">Missing credentials</string>
+  <string id="ErrorLoginWithDetail">Login error ($1$): $2$</string>
+  <string id="ErrorLoginHttp">Login error HTTP $1$</string>
+  <string id="ErrorLoginNoJson">Login: not JSON ($1$)</string>
+  <string id="ErrorLoginEmptyBody">Login: empty response</string>
+  <string id="ErrorLoginBadJsonFormat">Login: unexpected JSON</string>
+  <string id="ErrorLoginNoToken">No token or appId in JSON</string>
+  <string id="ErrorLoginWithMessage">Login error: $1$</string>
+  <string id="ErrorUpdateHttp">Update error: HTTP $1$</string>
+  <string id="ErrorDataHttp">Data error: HTTP $1$</string>
+  <string id="ErrorInvalidResponse">Invalid response</string>
+  <string id="ErrorNoDevices">No devices</string>
+  <string id="ErrorBadDeviceFormat">Invalid device format</string>
+  <string id="ErrorNoPartitionsInfo">No partitionsInfo</string>
+  <string id="ErrorNoPartitions">No partitions</string>
+  <string id="ErrorBadPartitionFormat">Invalid partition format</string>
+  <string id="ErrorNoPartition">No partition</string>
+  <string id="ErrorNoPartitionId">No partition id</string>
+
+  <string id="StatusDeactivated">Deactivated</string>
+  <string id="StatusActivatedHere">Activated: I am here</string>
+  <string id="StatusActivatedLeaving">Activated: I am leaving</string>
+  <string id="StatusUnknown">Unknown: $1$</string>
+
+  <string id="MenuTitle">Options</string>
+  <string id="MenuRefresh">Refresh</string>
+  <string id="MenuDeactivate">Deactivate</string>
+  <string id="MenuActivateHere">Activate: I am here</string>
+  <string id="MenuActivateLeaving">Activate: I am leaving</string>
 </strings>

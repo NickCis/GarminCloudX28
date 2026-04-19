@@ -13,7 +13,7 @@ class ConfigureView extends WatchUi.View {
     dc.clear();
     var w = dc.getWidth();
     var h = dc.getHeight();
-    var msg = "Por favor configura\nla cuenta en el\ncelular (Garmin\nConnect)";
+    var msg = L10n.t(Rez.Strings.ConfigureAccountMsg);
     dc.drawText(
       w / 2,
       h / 2,

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<strings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+  <string id="AppName">CloudX28</string>
+
+  <string id="SettingMailTitle">Correo</string>
+  <string id="SettingPasswordTitle">Contraseña</string>
+  <string id="SettingPinTitle">PIN</string>
+
+  <string id="ConfigureAccountMsg">Configura la cuenta\nen Garmin Connect\nen el teléfono.</string>
+  <string id="LoadingLabel">Cargando...</string>
+
+  <string id="ErrorMissingCredentials">Faltan credenciales</string>
+  <string id="ErrorLoginWithDetail">Error de inicio ($1$): $2$</string>
+  <string id="ErrorLoginHttp">Error de inicio HTTP $1$</string>
+  <string id="ErrorLoginNoJson">Inicio: no es JSON ($1$)</string>
+  <string id="ErrorLoginEmptyBody">Inicio: respuesta vacía</string>
+  <string id="ErrorLoginBadJsonFormat">Inicio: JSON inesperado</string>
+  <string id="ErrorLoginNoToken">Sin token o appId en JSON</string>
+  <string id="ErrorLoginWithMessage">Error de inicio: $1$</string>
+  <string id="ErrorUpdateHttp">Error al actualizar: HTTP $1$</string>
+  <string id="ErrorDataHttp">Error de datos: HTTP $1$</string>
+  <string id="ErrorInvalidResponse">Respuesta inválida</string>
+  <string id="ErrorNoDevices">Sin dispositivos</string>
+  <string id="ErrorBadDeviceFormat">Formato de dispositivo</string>
+  <string id="ErrorNoPartitionsInfo">Sin partitionsInfo</string>
+  <string id="ErrorNoPartitions">Sin particiones</string>
+  <string id="ErrorBadPartitionFormat">Formato de partición</string>
+  <string id="ErrorNoPartition">Sin partition</string>
+  <string id="ErrorNoPartitionId">Sin partition.id</string>
+
+  <string id="StatusDeactivated">Desactivada</string>
+  <string id="StatusActivatedHere">Activada: Estoy</string>
+  <string id="StatusActivatedLeaving">Activada: Me voy</string>
+  <string id="StatusUnknown">Desconocido: $1$</string>
+
+  <string id="MenuTitle">Opciones</string>
+  <string id="MenuRefresh">Actualizar</string>
+  <string id="MenuDeactivate">Desactivar</string>
+  <string id="MenuActivateHere">Activar: Estoy</string>
+  <string id="MenuActivateLeaving">Activar: Me voy</string>
+</strings>

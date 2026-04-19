@@ -43,7 +43,7 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
     cancelPutRefreshDelay();
     _pendingPut = -1;
     if (!Credentials.hasAll()) {
-      UiState.setError("Faltan credenciales");
+      UiState.setError(L10n.t(Rez.Strings.ErrorMissingCredentials));
       WatchUi.requestUpdate();
       return;
     }
@@ -169,9 +169,9 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
         }
       }
       if (detail.length() > 0) {
-        UiState.setError("Error login (" + code.toString() + "): " + detail);
+        UiState.setError(L10n.tf(Rez.Strings.ErrorLoginWithDetail, [code.toString(), detail] as Lang.Array));
       } else {
-        UiState.setError("Error login HTTP " + code.toString());
+        UiState.setError(L10n.tf(Rez.Strings.ErrorLoginHttp, [code.toString()] as Lang.Array));
       }
       WatchUi.requestUpdate();
       return;
@@ -180,11 +180,13 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
     if (d == null) {
       _op = OP_NONE;
       if (data instanceof Lang.String) {
-        UiState.setError("Login: no JSON (" + loginSnippetText(data as Lang.String) + ")");
+        UiState.setError(
+          L10n.tf(Rez.Strings.ErrorLoginNoJson, [loginSnippetText(data as Lang.String)] as Lang.Array)
+        );
       } else if (data == null) {
-        UiState.setError("Login: respuesta vacía");
+        UiState.setError(L10n.t(Rez.Strings.ErrorLoginEmptyBody));
       } else {
-        UiState.setError("Login: formato JSON inesperado");
+        UiState.setError(L10n.t(Rez.Strings.ErrorLoginBadJsonFormat));
       }
       WatchUi.requestUpdate();
       return;
@@ -195,9 +197,10 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
       _op = OP_NONE;
       var msg = loginApiErrorText(d);
       if (msg.length() == 0) {
-        msg = "Sin token/appId en JSON";
+        UiState.setError(L10n.t(Rez.Strings.ErrorLoginNoToken));
+      } else {
+        UiState.setError(L10n.tf(Rez.Strings.ErrorLoginWithMessage, [msg] as Lang.Array));
       }
-      UiState.setError("Error login: " + msg);
       WatchUi.requestUpdate();
       return;
     }
@@ -307,7 +310,7 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
         return;
       }
       _op = OP_NONE;
-      UiState.setError("Error al actualizar: HTTP " + code.toString());
+      UiState.setError(L10n.tf(Rez.Strings.ErrorUpdateHttp, [code.toString()] as Lang.Array));
       WatchUi.requestUpdate();
       return;
     }
@@ -345,33 +348,33 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
     }
     if (code != 200) {
       _op = OP_NONE;
-      UiState.setError("Error datos: HTTP " + code.toString());
+      UiState.setError(L10n.tf(Rez.Strings.ErrorDataHttp, [code.toString()] as Lang.Array));
       WatchUi.requestUpdate();
       return;
     }
     if (data == null) {
       _op = OP_NONE;
-      UiState.setError("Respuesta inválida");
+      UiState.setError(L10n.t(Rez.Strings.ErrorInvalidResponse));
       WatchUi.requestUpdate();
       return;
     }
     if (!(data instanceof Lang.Array)) {
       _op = OP_NONE;
-      UiState.setError("Respuesta inválida");
+      UiState.setError(L10n.t(Rez.Strings.ErrorInvalidResponse));
       WatchUi.requestUpdate();
       return;
     }
     var arr = data as Lang.Array;
     if (arr.size() == 0) {
       _op = OP_NONE;
-      UiState.setError("Sin dispositivos");
+      UiState.setError(L10n.t(Rez.Strings.ErrorNoDevices));
       WatchUi.requestUpdate();
       return;
     }
     var dev0 = arr[0];
     if (!(dev0 instanceof Lang.Dictionary)) {
       _op = OP_NONE;
-      UiState.setError("Formato dispositivo");
+      UiState.setError(L10n.t(Rez.Strings.ErrorBadDeviceFormat));
       WatchUi.requestUpdate();
       return;
     }
@@ -379,21 +382,21 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
     var pinfoList = dev.get("partitionsInfo");
     if (pinfoList == null || !(pinfoList instanceof Lang.Array)) {
       _op = OP_NONE;
-      UiState.setError("Sin partitionsInfo");
+      UiState.setError(L10n.t(Rez.Strings.ErrorNoPartitionsInfo));
       WatchUi.requestUpdate();
       return;
     }
     var piArr = pinfoList as Lang.Array;
     if (piArr.size() == 0) {
       _op = OP_NONE;
-      UiState.setError("Sin particiones");
+      UiState.setError(L10n.t(Rez.Strings.ErrorNoPartitions));
       WatchUi.requestUpdate();
       return;
     }
     var p0 = piArr[0];
     if (!(p0 instanceof Lang.Dictionary)) {
       _op = OP_NONE;
-      UiState.setError("Formato partición");
+      UiState.setError(L10n.t(Rez.Strings.ErrorBadPartitionFormat));
       WatchUi.requestUpdate();
       return;
     }
@@ -401,7 +404,7 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
     var part = pinfo.get("partition");
     if (part == null || !(part instanceof Lang.Dictionary)) {
       _op = OP_NONE;
-      UiState.setError("Sin partition");
+      UiState.setError(L10n.t(Rez.Strings.ErrorNoPartition));
       WatchUi.requestUpdate();
       return;
     }
@@ -409,7 +412,7 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
     var pid = dictString(pd, "id");
     if (pid.length() == 0) {
       _op = OP_NONE;
-      UiState.setError("Sin partition.id");
+      UiState.setError(L10n.t(Rez.Strings.ErrorNoPartitionId));
       WatchUi.requestUpdate();
       return;
     }
@@ -436,15 +439,15 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
 
   function lineForStatus(st as Number) as String {
     if (st == 1) {
-      return "Desactivada";
+      return L10n.t(Rez.Strings.StatusDeactivated);
     }
     if (st == 3) {
-      return "Activada: Estoy";
+      return L10n.t(Rez.Strings.StatusActivatedHere);
     }
     if (st == 4) {
-      return "Activada: Me voy";
+      return L10n.t(Rez.Strings.StatusActivatedLeaving);
     }
-    return "Desconocido: " + st.toString();
+    return L10n.tf(Rez.Strings.StatusUnknown, [st.toString()] as Lang.Array);
   }
 
   function dictString(d as Lang.Dictionary, key as String) as String {
@@ -472,15 +475,15 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
 
 class X28Menu extends WatchUi.Menu2 {
   function initialize() {
-    Menu2.initialize({ :title => "Opciones" });
-    addItem(new WatchUi.MenuItem("Actualizar", null, 0, null));
+    Menu2.initialize({ :title => L10n.t(Rez.Strings.MenuTitle) });
+    addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.MenuRefresh), null, 0, null));
     var st = UiState.rawStatus;
     if (st != 1) {
-      addItem(new WatchUi.MenuItem("Desactivar", null, 1, null));
+      addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.MenuDeactivate), null, 1, null));
     }
     if (st != 3 && st != 4) {
-      addItem(new WatchUi.MenuItem("Activar: Estoy", null, 3, null));
-      addItem(new WatchUi.MenuItem("Activar: Me voy", null, 4, null));
+      addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.MenuActivateHere), null, 3, null));
+      addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.MenuActivateLeaving), null, 4, null));
     }
   }
 }
