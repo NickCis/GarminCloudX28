@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+  <string id="AppName">CloudX28</string>
+  <string id="SettingMailTitle">Email (username)</string>
+  <string id="SettingPasswordTitle">Password</string>
+  <string id="SettingPinTitle">PIN</string>
+</strings>

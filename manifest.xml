@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" version="3">
+  <iq:application
+      id="e5c2d0b9-a0b1-4409-a1ee-6b624232a567"
+      entry="CloudX28App"
+      launcherIcon="@Drawables.LauncherIcon"
+      name="@Strings.AppName"
+      type="watch-app"
+      version="1.0.0"
+      minSdkVersion="4.2.0">
+
+    <iq:products>
+      <iq:product id="fenix7spro"/>
+    </iq:products>
+
+    <iq:permissions>
+      <iq:uses-permission id="Communications"/>
+    </iq:permissions>
+
+    <iq:languages>
+      <iq:language>eng</iq:language>
+      <iq:language>spa</iq:language>
+    </iq:languages>
+  </iq:application>
+</iq:manifest>
