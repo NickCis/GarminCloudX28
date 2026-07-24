@@ -1,11 +1,48 @@
 project.manifest = manifest.xml
 
-# Monkey Motion lives outside base resources so fr55/enduro3 can omit it.
+# Monkey Motion lives outside base resources so some devices can omit it.
 base.resourcePath = $(base.resourcePath);resources-anim
 
-# fr55: no animation resources (8-color MIP / no Monkey Motion mapping).
-fr55.resourcePath = resources;resources-fr55
+# Device icon size mappings (to avoid scaling warnings)
+# 70x70 icons
+venu2.resourcePath = $(venu2.resourcePath);resources-icon-70
+venu2plus.resourcePath = $(venu2plus.resourcePath);resources-icon-70
+venu3.resourcePath = $(venu3.resourcePath);resources-icon-70
+venu3s.resourcePath = $(venu3s.resourcePath);resources-icon-70
 
-# enduro/enduro3: no animation resources (no Monkey Motion mapping in SDK).
-enduro.resourcePath = resources
-enduro3.resourcePath = resources
+# 65x65 icons
+fenix847mm.resourcePath = $(fenix847mm.resourcePath);resources-icon-65
+fr965.resourcePath = $(fr965.resourcePath);resources-icon-65
+
+# 61x61 icons
+venu2s.resourcePath = $(venu2s.resourcePath);resources-icon-61
+
+# 60x60 icons
+venu.resourcePath = $(venu.resourcePath);resources-icon-60
+fr265.resourcePath = $(fr265.resourcePath);resources-icon-60
+fr265s.resourcePath = $(fr265s.resourcePath);resources-icon-60
+epix2.resourcePath = $(epix2.resourcePath);resources-icon-60
+epix2pro42mm.resourcePath = $(epix2pro42mm.resourcePath);resources-icon-60
+epix2pro47mm.resourcePath = $(epix2pro47mm.resourcePath);resources-icon-60
+epix2pro51mm.resourcePath = $(epix2pro51mm.resourcePath);resources-icon-60
+fenix843mm.resourcePath = $(fenix843mm.resourcePath);resources-icon-60
+
+# 56x56 icons
+vivoactive5.resourcePath = $(vivoactive5.resourcePath);resources-icon-56
+
+# 36x36 icons
+venusq.resourcePath = $(venusq.resourcePath);resources-icon-36
+venusqm.resourcePath = $(venusqm.resourcePath);resources-icon-36
+
+# 35x35 icons
+vivoactive4.resourcePath = $(vivoactive4.resourcePath);resources-icon-35
+
+# 30x30 icons
+vivoactive4s.resourcePath = $(vivoactive4s.resourcePath);resources-icon-30
+
+# Devices without Monkey Motion support
+fr55.resourcePath = resources;resources-fr55;resources-icon-35
+enduro.resourcePath = resources;resources-icon-40
+enduro3.resourcePath = resources;resources-icon-40
+vivoactive3.resourcePath = resources;resources-vivoactive3
+vivoactive3m.resourcePath = resources;resources-vivoactive3
