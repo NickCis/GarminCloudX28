@@ -13,13 +13,150 @@ class ConfigureView extends WatchUi.View {
     dc.clear();
     var w = dc.getWidth();
     var h = dc.getHeight();
-    var msg = L10n.t(Rez.Strings.ConfigureAccountMsg);
     dc.drawText(
       w / 2,
-      h / 2,
+      30,
       Graphics.FONT_SMALL,
-      msg,
+      L10n.t(Rez.Strings.ConfigureTitle),
+      Graphics.TEXT_JUSTIFY_CENTER
+    );
+    dc.drawText(
+      w / 2,
+      h / 2 - 10,
+      Graphics.FONT_XTINY,
+      L10n.t(Rez.Strings.ConfigureHint),
       Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
     );
+    if (Credentials.hasAll()) {
+      dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_TRANSPARENT);
+      dc.drawText(
+        w / 2,
+        h - 36,
+        Graphics.FONT_XTINY,
+        L10n.t(Rez.Strings.ConfigureDone),
+        Graphics.TEXT_JUSTIFY_CENTER
+      );
+    }
+    RoundUi.drawMenuHint(dc);
+  }
+}
+
+class ConfigureDelegate extends WatchUi.BehaviorDelegate {
+
+  function initialize() {
+    BehaviorDelegate.initialize();
+  }
+
+  function onMenu() as Boolean {
+    openConfigureMenu();
+    return true;
+  }
+
+  function onKey(evt as WatchUi.KeyEvent) as Boolean {
+    if (evt.getKey() == WatchUi.KEY_MENU) {
+      openConfigureMenu();
+      return true;
+    }
+    return false;
+  }
+
+  function onSelect() as Boolean {
+    openConfigureMenu();
+    return true;
+  }
+
+  function onStart() as Boolean {
+    if (Credentials.hasAll()) {
+      if (SessionStore.hasSession()) {
+        openMain();
+      } else {
+        loginFromConfigure();
+      }
+      return true;
+    }
+    openConfigureMenu();
+    return true;
+  }
+
+  function openMain() as Void {
+    WatchUi.switchToView(new MainView(), new MainDelegate(), WatchUi.SLIDE_LEFT);
+  }
+
+  function loginFromConfigure() as Void {
+    WatchUi.switchToView(new MainView(), new MainDelegate(), WatchUi.SLIDE_LEFT);
+  }
+
+  function openConfigureMenu() as Void {
+    WatchUi.pushView(new ConfigureMenu(), new ConfigureMenuDelegate(), WatchUi.SLIDE_UP);
+  }
+}
+
+class ConfigureMenu extends WatchUi.Menu2 {
+  function initialize() {
+    Menu2.initialize({ :title => L10n.t(Rez.Strings.ConfigureTitle) });
+    addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.ConfigureMail), mailSummary(), 0, null));
+    addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.ConfigurePassword), passSummary(), 1, null));
+    addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.ConfigurePin), pinSummary(), 2, null));
+    if (Credentials.hasAll()) {
+      addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.ConfigureContinue), null, 3, null));
+    }
+  }
+
+  function mailSummary() as String or Null {
+    return summary(Credentials.mail());
+  }
+
+  function passSummary() as String or Null {
+    var p = Credentials.password();
+    if (p.length() == 0) {
+      return null;
+    }
+    return "****";
+  }
+
+  function pinSummary() as String or Null {
+    var p = Credentials.pin();
+    if (p.length() == 0) {
+      return null;
+    }
+    return "****";
+  }
+
+  function summary(v as String) as String or Null {
+    if (v.length() == 0) {
+      return null;
+    }
+    if (v.length() <= 18) {
+      return v;
+    }
+    return v.substring(0, 15) + "...";
+  }
+}
+
+class ConfigureMenuDelegate extends WatchUi.Menu2InputDelegate {
+  function initialize() {
+    Menu2InputDelegate.initialize();
+  }
+
+  function onBack() as Void {
+    WatchUi.popView(WatchUi.SLIDE_DOWN);
+  }
+
+  function onSelect(item as WatchUi.MenuItem) as Void {
+    WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+    var id = item.getId();
+    if (id == null || !(id instanceof Number)) {
+      return;
+    }
+    var n = id as Number;
+    if (n == 0) {
+      CredentialFields.openPicker(CredentialFields.MAIL);
+    } else if (n == 1) {
+      CredentialFields.openPicker(CredentialFields.PASSWORD);
+    } else if (n == 2) {
+      CredentialFields.openPicker(CredentialFields.PIN);
+    } else if (n == 3) {
+      WatchUi.switchToView(new MainView(), new MainDelegate(), WatchUi.SLIDE_LEFT);
+    }
   }
 }

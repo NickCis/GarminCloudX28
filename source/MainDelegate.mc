@@ -22,7 +22,7 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
   }
 
   function onMenu() as Boolean {
-    showActionsMenu();
+    showSettingsMenu();
     return true;
   }
 
@@ -35,8 +35,16 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
     if (UiState.loading) {
       return;
     }
-    var menu = new X28Menu();
-    WatchUi.pushView(menu, new X28MenuDelegate(self), WatchUi.SLIDE_UP);
+    var menu = new X28ActionsMenu();
+    WatchUi.pushView(menu, new X28ActionsMenuDelegate(self), WatchUi.SLIDE_UP);
+  }
+
+  function showSettingsMenu() as Void {
+    if (UiState.loading) {
+      return;
+    }
+    var menu = new X28SettingsMenu();
+    WatchUi.pushView(menu, new X28SettingsMenuDelegate(self), WatchUi.SLIDE_UP);
   }
 
   function startRefreshAll() as Void {
@@ -156,22 +164,10 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
   function handleLogin(code as Number, data as Lang.Dictionary or Lang.String or Null) as Void {
     if (code != 200) {
       _op = OP_NONE;
-      var detail = "";
       if (code < 0) {
-        detail = HttpDebug.communicationsErrorLabel(code);
+        UiState.setErrorWithCode(L10n.t(Rez.Strings.ErrorNetwork), code);
       } else {
-        var norm = normalizeLoginBody(data);
-        if (norm != null) {
-          detail = loginApiErrorText(norm);
-        }
-        if (detail.length() == 0 && data instanceof Lang.String) {
-          detail = loginSnippetText(data as Lang.String);
-        }
-      }
-      if (detail.length() > 0) {
-        UiState.setError(L10n.tf(Rez.Strings.ErrorLoginWithDetail, [code.toString(), detail] as Lang.Array));
-      } else {
-        UiState.setError(L10n.tf(Rez.Strings.ErrorLoginHttp, [code.toString()] as Lang.Array));
+        UiState.setErrorWithCode(L10n.t(Rez.Strings.ErrorLoginFailed), code);
       }
       WatchUi.requestUpdate();
       return;
@@ -179,15 +175,7 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
     var d = normalizeLoginBody(data);
     if (d == null) {
       _op = OP_NONE;
-      if (data instanceof Lang.String) {
-        UiState.setError(
-          L10n.tf(Rez.Strings.ErrorLoginNoJson, [loginSnippetText(data as Lang.String)] as Lang.Array)
-        );
-      } else if (data == null) {
-        UiState.setError(L10n.t(Rez.Strings.ErrorLoginEmptyBody));
-      } else {
-        UiState.setError(L10n.t(Rez.Strings.ErrorLoginBadJsonFormat));
-      }
+      UiState.setError(L10n.t(Rez.Strings.ErrorLoginFailed));
       WatchUi.requestUpdate();
       return;
     }
@@ -195,12 +183,7 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
     var appId = loginAppIdField(d);
     if (token.length() == 0 || appId.length() == 0) {
       _op = OP_NONE;
-      var msg = loginApiErrorText(d);
-      if (msg.length() == 0) {
-        UiState.setError(L10n.t(Rez.Strings.ErrorLoginNoToken));
-      } else {
-        UiState.setError(L10n.tf(Rez.Strings.ErrorLoginWithMessage, [msg] as Lang.Array));
-      }
+      UiState.setError(L10n.t(Rez.Strings.ErrorLoginFailed));
       WatchUi.requestUpdate();
       return;
     }
@@ -310,7 +293,11 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
         return;
       }
       _op = OP_NONE;
-      UiState.setError(L10n.tf(Rez.Strings.ErrorUpdateHttp, [code.toString()] as Lang.Array));
+      if (code < 0) {
+        UiState.setErrorWithCode(L10n.t(Rez.Strings.ErrorNetwork), code);
+      } else {
+        UiState.setErrorWithCode(L10n.t(Rez.Strings.ErrorUpdateFailed), code);
+      }
       WatchUi.requestUpdate();
       return;
     }
@@ -348,7 +335,11 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
     }
     if (code != 200) {
       _op = OP_NONE;
-      UiState.setError(L10n.tf(Rez.Strings.ErrorDataHttp, [code.toString()] as Lang.Array));
+      if (code < 0) {
+        UiState.setErrorWithCode(L10n.t(Rez.Strings.ErrorNetwork), code);
+      } else {
+        UiState.setErrorWithCode(L10n.t(Rez.Strings.ErrorDataFailed), code);
+      }
       WatchUi.requestUpdate();
       return;
     }
@@ -447,7 +438,13 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
     if (st == 4) {
       return L10n.t(Rez.Strings.StatusActivatedLeaving);
     }
-    return L10n.tf(Rez.Strings.StatusUnknown, [st.toString()] as Lang.Array);
+    return L10n.t(Rez.Strings.StatusUnknown);
+  }
+
+  function logout() as Void {
+    SessionStore.clearSession();
+    Credentials.clearStored();
+    WatchUi.switchToView(new ConfigureView(), new ConfigureDelegate(), WatchUi.SLIDE_RIGHT);
   }
 
   function dictString(d as Lang.Dictionary, key as String) as String {
@@ -473,22 +470,25 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
   }
 }
 
-class X28Menu extends WatchUi.Menu2 {
+class X28ActionsMenu extends WatchUi.Menu2 {
   function initialize() {
-    Menu2.initialize({ :title => L10n.t(Rez.Strings.MenuTitle) });
-    addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.MenuRefresh), null, 0, null));
-    var st = UiState.rawStatus;
-    if (st != 1) {
-      addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.MenuDeactivate), null, 1, null));
-    }
-    if (st != 3 && st != 4) {
-      addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.MenuActivateHere), null, 3, null));
-      addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.MenuActivateLeaving), null, 4, null));
+    Menu2.initialize({ :title => L10n.t(Rez.Strings.MenuActionsTitle) });
+    if (UiState.error != null) {
+      addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.MenuRefresh), null, 0, null));
+    } else {
+      var st = UiState.rawStatus;
+      if (st != 1) {
+        addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.MenuDeactivate), null, 1, null));
+      }
+      if (st != 3 && st != 4) {
+        addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.MenuActivateHere), null, 3, null));
+        addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.MenuActivateLeaving), null, 4, null));
+      }
     }
   }
 }
 
-class X28MenuDelegate extends WatchUi.Menu2InputDelegate {
+class X28ActionsMenuDelegate extends WatchUi.Menu2InputDelegate {
   var _owner as MainDelegate;
 
   function initialize(owner as MainDelegate) {
@@ -511,6 +511,37 @@ class X28MenuDelegate extends WatchUi.Menu2InputDelegate {
       _owner.beginPutWithEnsurePartition(3);
     } else if (n == 4) {
       _owner.beginPutWithEnsurePartition(4);
+    }
+  }
+}
+
+class X28SettingsMenu extends WatchUi.Menu2 {
+  function initialize() {
+    Menu2.initialize({ :title => L10n.t(Rez.Strings.MenuTitle) });
+    addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.MenuRefresh), null, 0, null));
+    addItem(new WatchUi.MenuItem(L10n.t(Rez.Strings.MenuLogout), null, 99, null));
+  }
+}
+
+class X28SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
+  var _owner as MainDelegate;
+
+  function initialize(owner as MainDelegate) {
+    Menu2InputDelegate.initialize();
+    _owner = owner;
+  }
+
+  function onSelect(item as WatchUi.MenuItem) as Void {
+    WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+    var id = item.getId();
+    if (id == null || !(id instanceof Number)) {
+      return;
+    }
+    var n = id as Number;
+    if (n == 0) {
+      _owner.startRefreshAll();
+    } else if (n == 99) {
+      _owner.logout();
     }
   }
 }

@@ -33,6 +33,15 @@ module SessionStore {
     Storage.setValue(KEY_EXP, exp.value());
   }
 
+  function hasSession() as Boolean {
+    try {
+      var tok = Storage.getValue(KEY_TOKEN);
+      return tok != null && tok instanceof String && (tok as String).length() > 0;
+    } catch (ex) {
+      return false;
+    }
+  }
+
   function isTokenValid() as Boolean {
     try {
       var tok = Storage.getValue(KEY_TOKEN);

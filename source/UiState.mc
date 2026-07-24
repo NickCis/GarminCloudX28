@@ -7,16 +7,25 @@ module UiState {
 
   var loading as Boolean = false;
   var error as String or Null = null;
+  var errorCode as Number = 0;
   var statusLine as String = "";
   var lockGlyph as Number = LOCK_GLYPH_CLOSED;
   var rawStatus as Number = 0;
 
   function resetError() as Void {
     error = null;
+    errorCode = 0;
   }
 
   function setError(msg as String) as Void {
     error = msg;
+    errorCode = 0;
+    loading = false;
+  }
+
+  function setErrorWithCode(msg as String, code as Number) as Void {
+    error = msg;
+    errorCode = code;
     loading = false;
   }
 
