@@ -18,6 +18,7 @@
 
   <string id="ErrorMissingCredentials">Missing credentials</string>
   <string id="ErrorNetwork">Connection error</string>
+  <string id="ErrorPhoneDisconnected">Phone not connected</string>
   <string id="ErrorLoginFailed">Login failed</string>
   <string id="ErrorDataFailed">Data error</string>
   <string id="ErrorUpdateFailed">Update error</string>

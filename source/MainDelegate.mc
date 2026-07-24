@@ -161,11 +161,18 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
     }
   }
 
+  function friendlyNetworkError(code as Number) as String {
+    if (code == Communications.BLE_CONNECTION_UNAVAILABLE) {
+      return L10n.t(Rez.Strings.ErrorPhoneDisconnected);
+    }
+    return L10n.t(Rez.Strings.ErrorNetwork);
+  }
+
   function handleLogin(code as Number, data as Lang.Dictionary or Lang.String or Null) as Void {
     if (code != 200) {
       _op = OP_NONE;
       if (code < 0) {
-        UiState.setErrorWithCode(L10n.t(Rez.Strings.ErrorNetwork), code);
+        UiState.setErrorWithCode(friendlyNetworkError(code), code);
       } else {
         UiState.setErrorWithCode(L10n.t(Rez.Strings.ErrorLoginFailed), code);
       }
@@ -294,7 +301,7 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
       }
       _op = OP_NONE;
       if (code < 0) {
-        UiState.setErrorWithCode(L10n.t(Rez.Strings.ErrorNetwork), code);
+        UiState.setErrorWithCode(friendlyNetworkError(code), code);
       } else {
         UiState.setErrorWithCode(L10n.t(Rez.Strings.ErrorUpdateFailed), code);
       }
@@ -336,7 +343,7 @@ class MainDelegate extends WatchUi.BehaviorDelegate {
     if (code != 200) {
       _op = OP_NONE;
       if (code < 0) {
-        UiState.setErrorWithCode(L10n.t(Rez.Strings.ErrorNetwork), code);
+        UiState.setErrorWithCode(friendlyNetworkError(code), code);
       } else {
         UiState.setErrorWithCode(L10n.t(Rez.Strings.ErrorDataFailed), code);
       }

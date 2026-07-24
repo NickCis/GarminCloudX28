@@ -47,6 +47,9 @@ module HttpDebug {
   }
 
   function communicationsErrorLabel(code as Number) as String {
+    if (code == Communications.BLE_CONNECTION_UNAVAILABLE) {
+      return "BLE_CONNECTION_UNAVAILABLE (watch not linked to phone / Garmin Connect)";
+    }
     if (code == Communications.INVALID_HTTP_HEADER_FIELDS_IN_REQUEST) {
       return "INVALID_HTTP_HEADER_FIELDS_IN_REQUEST (use Communications.REQUEST_CONTENT_TYPE_* for Content-Type)";
     }
