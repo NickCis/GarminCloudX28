@@ -5,6 +5,16 @@ MONKEYDO := $(SDK)/bin/monkeydo
 CONNECTIQ := $(SDK)/bin/connectiq
 
 DEVICE ?= fenix7s
+# Devices that cannot include Monkey Motion resources (see monkey.jungle).
+NO_ANIM_DEVICES ?= fr55 fr645 fr645m fr935 vivoactive3 vivoactive3m enduro enduro3
+# Bake MM mappings for every manifest product that is installed locally,
+# except NO_ANIM_DEVICES. Override with COMMON_DEVICES=... if needed.
+COMMON_DEVICES ?= $(shell python3 -c 'import os,re; \
+m=open("manifest.template.xml").read(); \
+prods=re.findall(r"<iq:product id=\"([^\"]+)\"", m); \
+skip=set("$(NO_ANIM_DEVICES)".split()); \
+inst=set(os.listdir(os.path.expanduser("~/.Garmin/ConnectIQ/Devices"))); \
+print(":".join(p for p in prods if p not in skip and p in inst))')
 KEY ?= private_key.der
 OUT ?= MiAlarmaX28.prg
 
@@ -29,7 +39,7 @@ SETTINGS_SRC := $(patsubst %.prg,%-settings.json,$(OUT))
 APP_BASE := $(basename $(notdir $(OUT)))
 SETTINGS_VPATH := GARMIN/Settings/$(shell echo $(APP_BASE) | tr '[:lower:]' '[:upper:]')-settings.json
 
-.PHONY: build run simulator release clean-manifest $(MANIFEST)
+.PHONY: build run simulator release animations icons clean-manifest $(MANIFEST)
 
 # Always regenerate so switching VARIANT=beta|prod updates the id.
 $(MANIFEST): $(MANIFEST_TEMPLATE)
@@ -52,3 +62,9 @@ run: build
 	@echo "Start the Connect IQ Simulator first (e.g. make simulator in another terminal), then this loads $(OUT) on $(DEVICE)."
 	@if [ ! -f "$(SETTINGS_SRC)" ]; then echo "Missing $(SETTINGS_SRC); rebuild failed to emit app settings metadata." >&2; exit 1; fi
 	$(MONKEYDO) $(OUT) $(DEVICE) -a "$(SETTINGS_SRC):$(SETTINGS_VPATH)"
+
+animations:
+	$(SDK)/bin/monkeym -v resources-anim/animations/loading-spinner.gif -d $(COMMON_DEVICES) -f 10 -c 6 -p 1 -q 3 -o resources-anim/animations -e LoadingSpinner -w
+
+icons:
+	python3 scripts/gen_launcher_icons.py

@@ -23,6 +23,7 @@ TARGETS: dict[str, int | tuple[int, int]] = {
     "resources-icon-35": 35,
     "resources-icon-36": 36,
     "resources-icon-40": 40,
+    "resources-icon-54": 54,
     "resources-icon-56": 56,
     "resources-icon-60": 60,
     "resources-icon-61": 61,
